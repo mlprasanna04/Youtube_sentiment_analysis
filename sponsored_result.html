@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sponsored Ads and Promotions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #a8d9f2;
+            margin: 0;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .section {
+            width: 80%;
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #ffffffcc;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            list-style-type: disc;
+            padding-left: 0;
+            text-align: left;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        li {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        .comment {
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        .url-list {
+            margin-top: 5px;
+            font-size: 0.95em;
+            color: #0073e6;
+        }
+
+        small {
+            color: #666;
+        }
+
+        a {
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sponsored Ads and Promotions for Video ID: {{ video_id }}</h1>
+
+    <div class="section">
+        <h2>Total Sponsored Ads: {{ ads_count }} ({{ ads_percent }}%)</h2>
+        {% if ads %}
+            <ul>
+                {% for ad in ads %}
+                    <li>
+                        <div class="comment">{{ ad.text }}<br><small>Posted on: {{ ad.date }}</small></div>
+                        {% if ad.urls %}
+                            <div class="url-list">Links: 
+                                {% for url in ad.urls %}
+                                    <a href="{{ url }}" target="_blank">{{ url }}</a>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No sponsored ads with external links found.</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>Total Promotions: {{ promotions_count }} ({{ promotions_percent }}%)</h2>
+        {% if promotions %}
+            <ul>
+                {% for promo in promotions %}
+                    <li>
+                        <div class="comment">{{ promo.text }}<br><small>Posted on: {{ promo.date }}</small></div>
+                        {% if promo.urls %}
+                            <div class="url-list">Links: 
+                                {% for url in promo.urls %}
+                                    <a href="{{ url }}" target="_blank">{{ url }}</a>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No promotional comments with external links found.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

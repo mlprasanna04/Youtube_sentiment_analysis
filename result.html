@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentiment Analysis Result</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #8c7ade50;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .chart-container {
+            width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .button-container a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-container a:hover {
+            background-color: #0056b3;
+        }
+
+        canvas {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Sentiment Analysis</h2>
+
+<div class="chart-container">
+    <canvas id="commentChart"></canvas>
+</div>
+
+<div class="chart-container">
+    <h3 style="text-align:center;">Sentiment Summary for Video ID: {{ video_id }}</h3>
+    <table style="width:100%; border-collapse: collapse; margin: 0 auto 30px auto; text-align: center;">
+        <thead>
+            <tr style="background-color: #8453cda8; color: white;">
+                <th style="padding: 10px; border: 1px solid #ccc;">Total Comments</th>
+                <th style="padding: 10px; border: 1px solid #ccc;">Positive</th>
+                <th style="padding: 10px; border: 1px solid #ccc;">Neutral</th>
+                <th style="padding: 10px; border: 1px solid #ccc;">Negative</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background-color: #f9f9f9;">
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ total }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ positive }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ neutral }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ negative }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="button-container">
+    <a href="/analyze_sentiment_by_year/{{ video_id }}">Yearly Analysis</a>
+    <a href="/wordcloud/{{ video_id }}" target="_blank">View Word Cloud</a>
+    <a href="/spam_result/{{ video_id }}">Spam Analysis</a>
+    <a href="/sponsored_result/{{ video_id }}">Sponsored Result</a>
+</div>
+
+<script>
+    const ctx = document.getElementById('commentChart').getContext('2d');
+    const graphData = {
+        labels: {{ graph_data['labels'] | tojson }},
+        values: {{ graph_data['values'] | tojson }}
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: graphData.labels,
+            datasets: [{
+                label: 'Comment Sentiment Count',
+                data: graphData.values,
+                backgroundColor: [
+                    'rgba(70, 210, 140, 0.8)',   // Positive - Green
+    'rgba(125, 206, 245, 0.8)', // Neutral - Yellow
+    'rgba(224, 132, 187, 0.8)'    // Negative - Red
+                ],
+                borderColor: [
+                    'rgba(0, 128, 0, 1)',
+                    'rgba(255, 255, 0, 1)',
+                    'rgba(255, 0, 0, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0,
+                        color: '#000',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Number of Comments',
+                        color: '#000',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#000',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Total Sentiment Breakdown (Positive, Neutral, Negative)',
+                    color: '#000',
+                    font: {
+                        size: 18,
+                        weight: 'bold'
+                    }
+                },
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

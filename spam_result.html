@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spam vs Non-Spam Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #c3e4ed;
+            margin: 0;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #0c3c57;
+            margin-bottom: 10px;
+        }
+
+        .charts-wrapper {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 60px;
+            margin-top: 40px;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 260px;
+            height: 260px;
+        }
+
+        .chart-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 26px;
+            font-weight: bold;
+            color: #0c3c57;
+        }
+
+        .legend-container {
+            margin-top: 90px;
+        }
+
+        .legend-item {
+            display: inline-block;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        .legend-color {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            margin-right: 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Spam vs Non-Spam Comment Analysis</h1>
+    <p>Visual breakdown of comment classification from the analyzed YouTube video</p>
+
+    <div class="charts-wrapper">
+        <!-- Spam Donut -->
+        <div class="chart-container">
+            <canvas id="spamDonut"></canvas>
+            <div class="chart-center-text">{{ spam_percent }}%</div>
+            <h3>Spam Comments</h3>
+        </div>
+
+        <!-- Non-Spam Donut -->
+        <div class="chart-container">
+            <canvas id="nonSpamDonut"></canvas>
+            <div class="chart-center-text">{{ non_spam_percent }}%</div>
+            <h3>Non-Spam Comments</h3>
+        </div>
+    </div>
+
+    <div class="legend-container m-4">
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #d9534f;"></span> Spam
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #5cb85c;"></span> Non-Spam
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background-color: #eaeaea;"></span> Remaining %
+        </div>
+    </div>
+
+    <script>
+        const spamPercent = {{ spam_percent }};
+        const nonSpamPercent = {{ non_spam_percent }};
+
+        const createDonutChart = (elementId, mainLabel, mainColor, percentValue) => {
+            new Chart(document.getElementById(elementId), {
+                type: 'doughnut',
+                data: {
+                    labels: [mainLabel, 'Remaining'],
+                    datasets: [{
+                        data: [percentValue, 100 - percentValue],
+                        backgroundColor: [mainColor, '#eaeaea'],
+                        borderWidth: 0,
+                        cutout: '80%'
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: true
+                        },
+                        title: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        };
+
+        createDonutChart('spamDonut', 'Spam', '#d9534f', spamPercent);
+        createDonutChart('nonSpamDonut', 'Non-Spam', '#5cb85c', nonSpamPercent);
+    </script>
+
+</body>
+</html>

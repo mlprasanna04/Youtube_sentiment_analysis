@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Yearly Sentiment Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0c0a0c;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #fff;
+        }
+
+        .chart-container {
+            width: 80%;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Yearly Sentiment Analysis (2021–2025)</h2>
+
+<div class="chart-container">
+    <canvas id="yearlyChart"></canvas>
+</div>
+
+<script>
+    const ctx = document.getElementById('yearlyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ graph_data['labels'] | tojson }},
+            datasets: [
+                {
+                    label: 'Positive',
+                    data: {{ graph_data['positive'] | tojson }},
+                    borderColor: 'rgba(0, 128, 0, 1)',       // Green
+                    backgroundColor: 'rgba(0, 128, 0, 0.1)',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointBackgroundColor: 'rgba(0, 128, 0, 1)'
+                },
+                {
+                    label: 'Neutral',
+                    data: {{ graph_data['neutral'] | tojson }},
+                    borderColor: 'rgba(255, 204, 0, 1)',     // Yellow
+                    backgroundColor: 'rgba(255, 204, 0, 0.1)',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointBackgroundColor: 'rgba(255, 204, 0, 1)'
+                },
+                {
+                    label: 'Negative',
+                    data: {{ graph_data['negative'] | tojson }},
+                    borderColor: 'rgba(255, 0, 0, 1)',       // Red
+                    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointBackgroundColor: 'rgba(255, 0, 0, 1)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Number of Comments',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        color: '#000'
+                    },
+                    ticks: {
+                        color: '#000',
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Year',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        color: '#000'
+                    },
+                    ticks: {
+                        color: '#000',
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Yearly Sentiment Distribution',
+                    font: {
+                        size: 18,
+                        weight: 'bold'
+                    },
+                    color: '#007bff'
+                },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#000',
+                        font: {
+                            size: 13
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
